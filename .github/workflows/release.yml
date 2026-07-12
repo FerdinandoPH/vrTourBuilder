@@ -30,9 +30,11 @@ jobs:
 
       # electron-builder detecta el SO del runner y produce sus targets:
       # Windows -> nsis + portable, macOS -> dmg + zip, Linux -> AppImage + deb.
-      # Sin GH_TOKEN aquí a propósito: solo compila; la publicación la hace el job `release`.
+      # `--publish never`: solo compila, no publica. La publicación la hace el job `release`.
+      # (Sin esto, electron-builder intenta publicar solo al detectar el tag y falla por
+      #  falta de GH_TOKEN.)
       - name: Build distributables
-        run: npm run dist
+        run: npm run dist -- --publish never
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
