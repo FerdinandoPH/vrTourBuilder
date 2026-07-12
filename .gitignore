@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-electron
+release
+*.local
+.vite
+.DS_Store
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+
+# Config local de Claude Code
+.claude/
+
+# Notas internas de planificación
+planBak.md
+VRTOURBUILDER.md

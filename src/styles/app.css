@@ -1,0 +1,391 @@
+/* NodeList -------------------------------------------------------------- */
+.nodelist {
+  height: 100%;
+  overflow: auto;
+  padding: 20px;
+}
+.nodelist-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.nodelist-head h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.drop {
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: 20px;
+  transition: border-color 0.12s, background 0.12s;
+}
+.drop.over {
+  border-color: var(--accent);
+  background: rgba(79, 140, 255, 0.06);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.card .thumb {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  background: var(--panel-2);
+  display: block;
+}
+.card .body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card .body label {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3px;
+}
+.card .body input {
+  width: 100%;
+}
+.card .actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.card .actions button {
+  padding: 4px 9px;
+  font-size: 12px;
+}
+
+/* Editor ---------------------------------------------------------------- */
+.editor {
+  display: grid;
+  grid-template-columns: 240px 1fr 300px;
+  height: 100%;
+  min-height: 0;
+}
+.editor .sidebar {
+  border-right: 1px solid var(--border);
+  overflow: auto;
+  padding: 12px;
+}
+.editor .sidebar h3,
+.connpanel h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.node-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.node-item:hover {
+  background: var(--panel-2);
+}
+.node-item.active {
+  background: var(--panel-2);
+  border-color: var(--accent);
+}
+.node-item .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+.node-item.hasWarn .dot {
+  background: var(--warn);
+}
+.node-item.hasNoConn .dot {
+  background: var(--warn-orphan);
+}
+.node-item .nm {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.viewer-wrap {
+  position: relative;
+  min-height: 0;
+  background: #000;
+}
+.viewer-canvas {
+  position: absolute;
+  inset: 0;
+}
+.viewer-hint {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 17, 23, 0.9);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 8px;
+  z-index: 5;
+  pointer-events: none;
+  max-width: 80%;
+  text-align: center;
+}
+.connpanel {
+  border-left: 1px solid var(--border);
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.namefield {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.namefield span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.namefield input {
+  font: inherit;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+.conn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: var(--panel);
+}
+.conn .top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.conn .top .name {
+  font-weight: 600;
+}
+.conn.incoming {
+  opacity: 0.6;
+  border-style: dashed;
+}
+.conn.incoming .status {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.conn .dir {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.conn .dir button {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+.conn .status {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.conn .st-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.conn .st-row .ico {
+  margin-right: 5px;
+}
+.conn .st-row.done {
+  color: var(--ok);
+}
+.conn .st-row.todo {
+  color: var(--warn);
+}
+.conn .st-row button {
+  padding: 3px 8px;
+  font-size: 12px;
+}
+.addconn {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.addconn select {
+  flex: 1;
+  font: inherit;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px;
+}
+
+/* Export bar ------------------------------------------------------------ */
+.exportbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.exportbar .status {
+  font-size: 12px;
+}
+.progress {
+  position: relative;
+  width: 200px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--panel-2);
+}
+.progress-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+  transition: width 0.15s ease;
+}
+.progress-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.export-pop {
+  position: absolute;
+  top: 52px;
+  right: 16px;
+  width: 340px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  z-index: 20;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+.export-pop h4 {
+  margin: 0 0 8px;
+}
+.issue {
+  font-size: 12.5px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  margin-bottom: 5px;
+}
+.issue.error {
+  background: rgba(241, 106, 106, 0.12);
+  color: var(--error);
+}
+.issue.warning {
+  background: rgba(242, 179, 75, 0.12);
+  color: var(--warn);
+}
+
+/* Settings -------------------------------------------------------------- */
+.settings {
+  height: 100%;
+  overflow: auto;
+  padding: 24px;
+  max-width: 720px;
+}
+.settings h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+.setting {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  cursor: pointer;
+}
+.setting input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex: none;
+}
+.setting > span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.setting code {
+  background: var(--panel-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.setting-text {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: inherit;
+  font: inherit;
+  cursor: text;
+}
+.setting-text:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Graph / Preview ------------------------------------------------------- */
+.graph {
+  height: 100%;
+}
+.preview-wrap {
+  position: relative;
+  height: 100%;
+  background: #000;
+}
+.preview-canvas {
+  position: absolute;
+  inset: 0;
+}

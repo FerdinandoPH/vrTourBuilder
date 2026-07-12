@@ -1,0 +1,123 @@
+{
+  "app": {
+    "newProject": "New project",
+    "newProjectTitle": "Start a new project (unsaved changes will be lost)",
+    "newProjectConfirm": "A new project will be created and your current changes will be lost.\n\nIf you haven't exported a draft (.vrtour.zip), you won't be able to recover them.\n\nDo you want to continue?",
+    "loading": "Loading project…",
+    "pendingMarkers": "Pending markers"
+  },
+  "tabs": {
+    "nodes": "Photos",
+    "editor": "Editor",
+    "graph": "Diagram",
+    "preview": "Preview",
+    "settings": "Settings"
+  },
+  "language": {
+    "label": "Language",
+    "es": "Spanish",
+    "en": "English"
+  },
+  "nodeList": {
+    "heading_one": "360° photos · {{count}} node",
+    "heading_other": "360° photos · {{count}} nodes",
+    "subtitle": "Each photo is a tour node.",
+    "dropzone": "Drag your 360° photos here or click to select them",
+    "empty": "No photos yet. Upload the first one to get started."
+  },
+  "node": {
+    "visibleName": "Display name",
+    "fileInPano": "File in ./pano",
+    "startNodePill": "Start node",
+    "markStart": "Set as start",
+    "editConnections": "Edit connections",
+    "delete": "Delete",
+    "deleteConfirm": "Delete “{{name}}”?"
+  },
+  "editor": {
+    "emptyUpload": "Upload photos in the “Photos” tab to get started.",
+    "nodesTitle": "Nodes",
+    "startPill": "start",
+    "placeMarkerHint": "Click the image to place the marker toward “{{name}}”",
+    "escToCancel": "Esc to cancel"
+  },
+  "connections": {
+    "namePlaceholder": "Photo name",
+    "title": "Connections",
+    "none": "No connections. Add one below.",
+    "onlyFrom": "Only from “{{name}}” · not visible here",
+    "makeBidirectional": "Make bidirectional",
+    "removeTitle": "Remove connection",
+    "bidirectional": "Bidirectional",
+    "bidirectionalTitle": "You can go back and forth between both nodes",
+    "oneWay": "One-way",
+    "oneWayTitle": "Only visible from this node; it doesn't appear in the other",
+    "markerFromHere": "Marker from here",
+    "markerFrom": "Marker from “{{name}}”",
+    "place": "Place",
+    "replace": "Reposition",
+    "clicking": "Click…",
+    "pendingThere": "pending there",
+    "addPlaceholder": "Add connection…",
+    "add": "Add"
+  },
+  "settings": {
+    "title": "Tour settings",
+    "subtitle": "Options applied to the preview and the exported tour.",
+    "projectName": "Project name",
+    "projectNameHelp": "Used as the exported tour page title and as the name of the downloaded files (<0>.zip</0> and <1>.vrtour.zip</1>). If left empty, <2>VRTour</2> is used.",
+    "projectNamePlaceholder": "VRTour",
+    "includeGallery": "Include thumbnail gallery",
+    "galleryHelp": "Adds Photo Sphere Viewer's <0>Gallery</0> plugin: a strip of thumbnails at the bottom to quickly jump between areas. It reuses the compressed thumbnails VRTourBuilder already generates, and on export they are included in <1>./pano/thumbs</1>.",
+    "tourLanguage": "Tour language",
+    "tourLanguageHelp": "Language of the instructions and help texts in the exported tour (index.html, LEEME/README and scripts). Independent of the application language."
+  },
+  "graph": {
+    "markerPending": "pending marker",
+    "empty": "Upload photos to see the tour diagram."
+  },
+  "preview": {
+    "empty": "Upload and connect photos to preview the tour.",
+    "error": "Preview error: {{error}}"
+  },
+  "export": {
+    "ready": "Ready to export",
+    "problems_one": "{{count}} issue",
+    "problems_other": "{{count}} issues",
+    "projectMenu": "Project",
+    "exportZip": "Export ZIP",
+    "exportZipTitleReady": "Download runnable ZIP",
+    "exportZipTitleNotReady": "Fix the problems first",
+    "draftHeading": "Project draft",
+    "exportDraft": "Export draft",
+    "exportDraftTitle": "Save the current project (model + photos) as .vrtour.zip",
+    "importDraft": "Import draft…",
+    "importDraftTitle": "Load a .vrtour.zip draft saved earlier",
+    "validation": "Validation",
+    "allGood": "Everything looks good. The tour can be exported.",
+    "alertDraftFailed": "Could not export the draft: {{error}}",
+    "alertImportFailed": "Could not import: {{error}}",
+    "progress": {
+      "preparing": "Preparing…",
+      "reading": "Reading…",
+      "loading": "Loading…",
+      "addingPhotos": "Adding photos… ({{current}}/{{total}})",
+      "compressing": "Compressing…",
+      "packaging": "Packaging…",
+      "downloading": "Downloading…",
+      "readingPhotos": "Reading photos… ({{current}}/{{total}})"
+    },
+    "error": {
+      "invalidProject": "Invalid project file."
+    }
+  },
+  "validation": {
+    "noPhotos": "There are no photos in the tour.",
+    "noStartNode": "No start node has been set.",
+    "multipleStartNodes": "There are {{count}} start nodes; there must be exactly one.",
+    "noFileName": "“{{name}}” has no file name.",
+    "duplicateFileName": "The file name “{{file}}” is repeated in {{count}} nodes.",
+    "missingMarker": "The marker from “{{from}}” toward “{{to}}” is missing.",
+    "orphanNode": "“{{name}}” is not connected to any other node."
+  }
+}

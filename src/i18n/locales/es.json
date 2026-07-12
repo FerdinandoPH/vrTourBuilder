@@ -1,0 +1,123 @@
+{
+  "app": {
+    "newProject": "Nuevo proyecto",
+    "newProjectTitle": "Empezar un proyecto nuevo (se perderán los cambios sin guardar)",
+    "newProjectConfirm": "Se creará un proyecto nuevo y se perderán los cambios actuales.\n\nSi no has exportado un borrador (.vrtour.zip), no podrás recuperarlos.\n\n¿Quieres continuar?",
+    "loading": "Cargando proyecto…",
+    "pendingMarkers": "Marcadores pendientes"
+  },
+  "tabs": {
+    "nodes": "Fotos",
+    "editor": "Editor",
+    "graph": "Diagrama",
+    "preview": "Vista previa",
+    "settings": "Configuración"
+  },
+  "language": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "Inglés"
+  },
+  "nodeList": {
+    "heading_one": "Fotos 360º · {{count}} nodo",
+    "heading_other": "Fotos 360º · {{count}} nodos",
+    "subtitle": "Cada foto es un nodo del tour.",
+    "dropzone": "Arrastra aquí tus fotos 360º o haz clic para seleccionarlas",
+    "empty": "Todavía no hay fotos. Sube la primera para empezar."
+  },
+  "node": {
+    "visibleName": "Nombre visible",
+    "fileInPano": "Archivo en ./pano",
+    "startNodePill": "Nodo inicial",
+    "markStart": "Marcar inicial",
+    "editConnections": "Editar conexiones",
+    "delete": "Borrar",
+    "deleteConfirm": "¿Borrar «{{name}}»?"
+  },
+  "editor": {
+    "emptyUpload": "Sube fotos en la pestaña «Fotos» para empezar.",
+    "nodesTitle": "Nodos",
+    "startPill": "inicio",
+    "placeMarkerHint": "Haz clic en la imagen para colocar el marcador hacia «{{name}}»",
+    "escToCancel": "Esc para cancelar"
+  },
+  "connections": {
+    "namePlaceholder": "Nombre de la foto",
+    "title": "Conexiones",
+    "none": "Sin conexiones. Añade una abajo.",
+    "onlyFrom": "Solo desde «{{name}}» · no visible aquí",
+    "makeBidirectional": "Hacer bidireccional",
+    "removeTitle": "Eliminar conexión",
+    "bidirectional": "Bidireccional",
+    "bidirectionalTitle": "Se puede ir y volver entre ambos nodos",
+    "oneWay": "Solo ida",
+    "oneWayTitle": "Solo se ve desde este nodo; no aparece en el otro",
+    "markerFromHere": "Marcador desde aquí",
+    "markerFrom": "Marcador desde «{{name}}»",
+    "place": "Colocar",
+    "replace": "Recolocar",
+    "clicking": "Haz clic…",
+    "pendingThere": "pendiente allí",
+    "addPlaceholder": "Añadir conexión…",
+    "add": "Añadir"
+  },
+  "settings": {
+    "title": "Configuración del tour",
+    "subtitle": "Opciones que se aplican a la vista previa y al tour exportado.",
+    "projectName": "Nombre del proyecto",
+    "projectNameHelp": "Se usa como título de la página del tour exportado y como nombre de los archivos descargados (<0>.zip</0> y <1>.vrtour.zip</1>). Si se deja vacío, se usa <2>VRTour</2>.",
+    "projectNamePlaceholder": "VRTour",
+    "includeGallery": "Incluir galería de miniaturas",
+    "galleryHelp": "Añade el plugin <0>Gallery</0> de Photo Sphere Viewer: una tira de miniaturas en la parte inferior para saltar rápidamente entre zonas. Aprovecha las miniaturas comprimidas que ya genera VRTourBuilder, y al exportar se incluyen en <1>./pano/thumbs</1>.",
+    "tourLanguage": "Idioma del tour",
+    "tourLanguageHelp": "Idioma de las instrucciones y textos de ayuda del tour exportado (index.html, LEEME/README y scripts). Independiente del idioma de la aplicación."
+  },
+  "graph": {
+    "markerPending": "marcador pendiente",
+    "empty": "Sube fotos para ver el diagrama del tour."
+  },
+  "preview": {
+    "empty": "Sube fotos y conéctalas para previsualizar el tour.",
+    "error": "Error en la vista previa: {{error}}"
+  },
+  "export": {
+    "ready": "Listo para exportar",
+    "problems_one": "{{count}} problema",
+    "problems_other": "{{count}} problemas",
+    "projectMenu": "Proyecto",
+    "exportZip": "Exportar ZIP",
+    "exportZipTitleReady": "Descargar ZIP ejecutable",
+    "exportZipTitleNotReady": "Corrige los problemas primero",
+    "draftHeading": "Borrador de proyecto",
+    "exportDraft": "Exportar borrador",
+    "exportDraftTitle": "Guardar el proyecto en curso (modelo + fotos) como .vrtour.zip",
+    "importDraft": "Importar borrador…",
+    "importDraftTitle": "Cargar un borrador .vrtour.zip guardado antes",
+    "validation": "Validación",
+    "allGood": "Todo correcto. El tour se puede exportar.",
+    "alertDraftFailed": "No se pudo exportar el borrador: {{error}}",
+    "alertImportFailed": "No se pudo importar: {{error}}",
+    "progress": {
+      "preparing": "Preparando…",
+      "reading": "Leyendo…",
+      "loading": "Cargando…",
+      "addingPhotos": "Añadiendo fotos… ({{current}}/{{total}})",
+      "compressing": "Comprimiendo…",
+      "packaging": "Empaquetando…",
+      "downloading": "Descargando…",
+      "readingPhotos": "Leyendo fotos… ({{current}}/{{total}})"
+    },
+    "error": {
+      "invalidProject": "Archivo de proyecto no válido."
+    }
+  },
+  "validation": {
+    "noPhotos": "No hay ninguna foto en el tour.",
+    "noStartNode": "No hay ningún nodo inicial marcado.",
+    "multipleStartNodes": "Hay {{count}} nodos iniciales; debe haber exactamente uno.",
+    "noFileName": "«{{name}}» no tiene nombre de archivo.",
+    "duplicateFileName": "El nombre de archivo «{{file}}» está repetido en {{count}} nodos.",
+    "missingMarker": "Falta el marcador desde «{{from}}» hacia «{{to}}».",
+    "orphanNode": "«{{name}}» no está conectado con ningún otro nodo."
+  }
+}
