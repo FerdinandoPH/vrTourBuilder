@@ -151,6 +151,27 @@
   max-width: 80%;
   text-align: center;
 }
+.viewer-tools {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+}
+.viewer-tools button {
+  background: rgba(15, 17, 23, 0.9);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.viewer-tools button:hover {
+  border-color: var(--accent);
+}
 .connpanel {
   border-left: 1px solid var(--border);
   overflow: auto;
@@ -253,6 +274,64 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 5px;
+}
+
+/* select2 (dropdown "Añadir conexión") — tema oscuro ---------------------- */
+.addconn .select2-container {
+  flex: 1;
+  min-width: 0;
+}
+.select2-container--default .select2-selection--single {
+  height: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: var(--text);
+  line-height: normal;
+  padding: 6px 8px;
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__placeholder {
+  color: var(--muted);
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow {
+  height: 100%;
+}
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow
+  b {
+  border-color: var(--muted) transparent transparent transparent;
+}
+.select2-dropdown {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+/* Altura del área de resultados (por defecto select2 la limita a 200px). Es
+   independiente del offset de scroll inicial: sólo agranda la lista visible. */
+.select2-container--default .select2-results > .select2-results__options {
+  max-height: 420px;
+  overflow-x: hidden;
+}
+.select2-container--default .select2-results__option {
+  color: var(--text);
+  padding: 6px 8px;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background: var(--accent);
+  color: #fff;
+}
+.select2-container--default
+  .select2-results__option[aria-selected='true'] {
+  background: var(--panel-2);
 }
 
 /* Export bar ------------------------------------------------------------ */

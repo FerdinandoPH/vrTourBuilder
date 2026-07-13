@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ConnectionSelect from './ConnectionSelect';
 import { useTourStore } from '../store/tourStore';
 import {
   dirForSource,
@@ -153,14 +154,14 @@ export default function ConnectionPanel({ node, armedLinkId, onArm }: Props) {
       })}
 
       <div className="addconn">
-        <select value={pick} onChange={(e) => setPick(e.target.value)}>
-          <option value="">{t('connections.addPlaceholder')}</option>
-          {candidates.map((n) => (
-            <option key={n.id} value={n.id}>
-              {n.name}
-            </option>
-          ))}
-        </select>
+        <ConnectionSelect
+          nodes={nodes}
+          currentNode={node}
+          candidates={candidates}
+          value={pick}
+          onChange={setPick}
+          placeholder={t('connections.addPlaceholder')}
+        />
         <button
           className="primary"
           disabled={!pick}

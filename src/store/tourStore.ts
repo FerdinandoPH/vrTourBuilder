@@ -72,6 +72,7 @@ interface TourState {
   setFileName: (id: string, fileName: string) => void;
   deleteNode: (id: string) => Promise<void>;
   setStartNode: (id: string) => void;
+  setNodeInitView: (id: string, view: MarkerPos | undefined) => void;
   setActiveNode: (id: string | null) => void;
 
   // Enlaces
@@ -202,6 +203,13 @@ export const useTourStore = create<TourState>((set, get) => {
     setStartNode: (id) => {
       set((s) => ({
         nodes: s.nodes.map((n) => ({ ...n, startNode: n.id === id })),
+      }));
+      persist();
+    },
+
+    setNodeInitView: (id, view) => {
+      set((s) => ({
+        nodes: s.nodes.map((n) => (n.id === id ? { ...n, initView: view } : n)),
       }));
       persist();
     },

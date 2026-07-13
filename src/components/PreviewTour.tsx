@@ -73,8 +73,19 @@ export default function PreviewTour() {
         },
       ]);
 
+      // Vista inicial del nodo de arranque, aplicada como orientación por defecto
+      // del visor (PSV ya armoniza el ángulo al navegar entre nodos, así que no
+      // hace falta reorientar en cada nodo).
+      const startView = nodes.find((n) => n.id === getStartNodeId(nodes))?.initView;
+
       try {
-        viewer = new Viewer({ container: containerRef.current, plugins });
+        viewer = new Viewer({
+          container: containerRef.current,
+          plugins,
+          ...(startView
+            ? { defaultYaw: startView.yaw, defaultPitch: startView.pitch }
+            : {}),
+        });
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
       }

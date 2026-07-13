@@ -18,8 +18,14 @@ export default function NodeEditor() {
   const activeNodeId = useTourStore((s) => s.activeNodeId);
   const setActiveNode = useTourStore((s) => s.setActiveNode);
   const setLinkPos = useTourStore((s) => s.setLinkPos);
+  const setNodeInitView = useTourStore((s) => s.setNodeInitView);
 
   const activeNode = nodes.find((n) => n.id === activeNodeId) ?? null;
+
+  // Orientación inicial guardada del nodo activo, accesible dentro de efectos
+  // sin recargar el panorama al capturarla.
+  const initViewRef = useRef(activeNode?.initView);
+  initViewRef.current = activeNode?.initView;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
@@ -92,8 +98,15 @@ export default function NodeEditor() {
     const viewer = viewerRef.current;
     if (!viewer || !activeImageId) return;
     let cancelled = false;
+    const initView = initViewRef.current;
     void resolveImageUrl(activeImageId).then((url) => {
-      if (url && !cancelled) void viewer.setPanorama(url, { showLoader: true });
+      if (url && !cancelled)
+        void viewer.setPanorama(url, {
+          showLoader: true,
+          ...(initView
+            ? { position: { yaw: initView.yaw, pitch: initView.pitch } }
+            : {}),
+        });
     });
     return () => {
       cancelled = true;
@@ -164,6 +177,34 @@ export default function NodeEditor() {
 
       <div className="viewer-wrap">
         <div ref={containerRef} className="viewer-canvas" />
+        {activeNode?.startNode && (
+          <div className="viewer-tools">
+            <button
+              onClick={() => {
+                const pos = viewerRef.current?.getPosition();
+                if (pos)
+                  setNodeInitView(activeNode.id, {
+                    yaw: pos.yaw,
+                    pitch: pos.pitch,
+                  });
+              }}
+              title={t('editor.initViewTitle')}
+            >
+              📍{' '}
+              {activeNode.initView
+                ? t('editor.updateInitView')
+                : t('editor.setInitView')}
+            </button>
+            {activeNode.initView && (
+              <button
+                onClick={() => setNodeInitView(activeNode.id, undefined)}
+                title={t('editor.clearInitView')}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        )}
         {armedLinkId && (
           <div className="viewer-hint">
             {t('editor.placeMarkerHint', {

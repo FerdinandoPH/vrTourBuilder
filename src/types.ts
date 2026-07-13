@@ -13,6 +13,7 @@ export interface TourNode {
   fileName: string; // nombre final del archivo dentro de ./pano (p.ej. "salon.jpg")
   imageId: string; // clave del blob en IndexedDB
   startNode?: boolean; // marca el nodo inicial del tour (exactamente uno)
+  initView?: MarkerPos; // orientación inicial de la cámara al entrar en el nodo
 }
 
 // Dirección de una conexión.

@@ -73,6 +73,14 @@ export function generateTourJs(
   const exportNodes = buildExportNodes(nodes, links, gallery);
   const startNodeId = getStartNodeId(nodes);
 
+  // Vista inicial del nodo de arranque (yaw/pitch en radianes), aplicada como
+  // orientación por defecto del visor. PSV ya armoniza el ángulo al navegar entre
+  // nodos, por lo que no hace falta reorientar en cada nodo.
+  const startView = nodes.find((n) => n.id === startNodeId)?.initView;
+  const defaultViewConfig = startView
+    ? `\n  defaultYaw: ${startView.yaw},\n  defaultPitch: ${startView.pitch},`
+    : '';
+
   const galleryImport = gallery
     ? `import { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';\n`
     : '';
@@ -97,7 +105,7 @@ new Viewer({
       nodes,
       startNodeId: ${JSON.stringify(startNodeId)},
     }],
-  ],
+  ],${defaultViewConfig}
 });
 `;
 }

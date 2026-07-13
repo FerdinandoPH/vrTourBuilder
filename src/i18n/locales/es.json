@@ -39,7 +39,11 @@
     "nodesTitle": "Nodos",
     "startPill": "inicio",
     "placeMarkerHint": "Haz clic en la imagen para colocar el marcador hacia «{{name}}»",
-    "escToCancel": "Esc para cancelar"
+    "escToCancel": "Esc para cancelar",
+    "setInitView": "Fijar vista inicial",
+    "updateInitView": "Vista inicial fijada",
+    "clearInitView": "Quitar vista inicial",
+    "initViewTitle": "Usa la orientación actual como vista inicial de esta foto en el tour"
   },
   "connections": {
     "namePlaceholder": "Nombre de la foto",
