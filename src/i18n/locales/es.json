@@ -74,7 +74,9 @@
     "includeGallery": "Incluir galería de miniaturas",
     "galleryHelp": "Añade el plugin <0>Gallery</0> de Photo Sphere Viewer: una tira de miniaturas en la parte inferior para saltar rápidamente entre zonas. Aprovecha las miniaturas comprimidas que ya genera VRTourBuilder, y al exportar se incluyen en <1>./pano/thumbs</1>.",
     "tourLanguage": "Idioma del tour",
-    "tourLanguageHelp": "Idioma de las instrucciones y textos de ayuda del tour exportado (index.html, LEEME/README y scripts). Independiente del idioma de la aplicación."
+    "tourLanguageHelp": "Idioma de las instrucciones y textos de ayuda del tour exportado (index.html, LEEME/README y scripts). Independiente del idioma de la aplicación.",
+    "tiles": "Trocear las fotos en teselas (recomendado)",
+    "tilesHelp": "Al exportar, cada foto se divide en teselas en <0>./pano_tiles</0>: el visor muestra al instante una versión reducida y después descarga, siempre a resolución completa, solo la zona que se está mirando. Carga mucho más rápido y evita el error «Error loading panorama» de los móviles con fotos muy grandes. Con JPEG de cámara el troceado es sin pérdida: las teselas contienen exactamente los mismos datos que la foto original."
   },
   "graph": {
     "markerPending": "marcador pendiente",
@@ -109,11 +111,13 @@
       "compressing": "Comprimiendo…",
       "packaging": "Empaquetando…",
       "downloading": "Descargando…",
-      "readingPhotos": "Leyendo fotos… ({{current}}/{{total}})"
+      "readingPhotos": "Leyendo fotos… ({{current}}/{{total}})",
+      "tilingPhotos": "Troceando fotos en teselas… ({{current}}/{{total}})"
     },
     "error": {
       "invalidProject": "Archivo de proyecto no válido."
-    }
+    },
+    "alertTilesSkipped": "No se han podido trocear en teselas estas fotos: {{files}}.\n\nLas teselas solo funcionan con panorámicas 360º completas (proporción 2:1), así que el tour se ha exportado con las fotos enteras."
   },
   "validation": {
     "noPhotos": "No hay ninguna foto en el tour.",

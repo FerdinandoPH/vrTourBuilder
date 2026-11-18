@@ -9,6 +9,8 @@ export default function Settings() {
   const setName = useTourStore((s) => s.setName);
   const gallery = useTourStore((s) => s.settings.gallery);
   const setGallery = useTourStore((s) => s.setGallery);
+  const tiles = useTourStore((s) => s.settings.tiles);
+  const setTiles = useTourStore((s) => s.setTiles);
   const lang = useTourStore((s) => s.settings.lang);
   const setLang = useTourStore((s) => s.setLang);
 
@@ -67,6 +69,20 @@ export default function Settings() {
               i18nKey="settings.galleryHelp"
               components={[<em />, <code />]}
             />
+          </span>
+        </span>
+      </label>
+
+      <label className="setting">
+        <input
+          type="checkbox"
+          checked={tiles}
+          onChange={(e) => setTiles(e.target.checked)}
+        />
+        <span>
+          <strong>{t('settings.tiles')}</strong>
+          <span className="muted">
+            <Trans i18nKey="settings.tilesHelp" components={[<code />]} />
           </span>
         </span>
       </label>

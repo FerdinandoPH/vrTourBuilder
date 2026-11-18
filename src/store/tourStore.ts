@@ -64,6 +64,7 @@ interface TourState {
   // Configuración
   setName: (name: string) => void;
   setGallery: (enabled: boolean) => void;
+  setTiles: (enabled: boolean) => void;
   setLang: (lang: ExportLang) => void;
 
   // Nodos
@@ -137,6 +138,11 @@ export const useTourStore = create<TourState>((set, get) => {
 
     setGallery: (enabled) => {
       set((s) => ({ settings: { ...s.settings, gallery: enabled } }));
+      persist();
+    },
+
+    setTiles: (enabled) => {
+      set((s) => ({ settings: { ...s.settings, tiles: enabled } }));
       persist();
     },
 

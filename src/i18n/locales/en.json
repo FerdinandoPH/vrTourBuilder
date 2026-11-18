@@ -74,7 +74,9 @@
     "includeGallery": "Include thumbnail gallery",
     "galleryHelp": "Adds Photo Sphere Viewer's <0>Gallery</0> plugin: a strip of thumbnails at the bottom to quickly jump between areas. It reuses the compressed thumbnails VRTourBuilder already generates, and on export they are included in <1>./pano/thumbs</1>.",
     "tourLanguage": "Tour language",
-    "tourLanguageHelp": "Language of the instructions and help texts in the exported tour (index.html, LEEME/README and scripts). Independent of the application language."
+    "tourLanguageHelp": "Language of the instructions and help texts in the exported tour (index.html, LEEME/README and scripts). Independent of the application language.",
+    "tiles": "Split photos into tiles (recommended)",
+    "tilesHelp": "On export, each photo is split into tiles in <0>./pano_tiles</0>: the viewer instantly shows a reduced version and then downloads, always at full resolution, only the area being looked at. It loads much faster and avoids the “Error loading panorama” error on phones with very large photos. With camera JPEGs the split is lossless: the tiles contain exactly the same data as the original photo."
   },
   "graph": {
     "markerPending": "pending marker",
@@ -109,11 +111,13 @@
       "compressing": "Compressing…",
       "packaging": "Packaging…",
       "downloading": "Downloading…",
-      "readingPhotos": "Reading photos… ({{current}}/{{total}})"
+      "readingPhotos": "Reading photos… ({{current}}/{{total}})",
+      "tilingPhotos": "Splitting photos into tiles… ({{current}}/{{total}})"
     },
     "error": {
       "invalidProject": "Invalid project file."
-    }
+    },
+    "alertTilesSkipped": "These photos could not be split into tiles: {{files}}.\n\nTiles only work with full 360º panoramas (2:1 aspect ratio), so the tour was exported with whole photos."
   },
   "validation": {
     "noPhotos": "There are no photos in the tour.",

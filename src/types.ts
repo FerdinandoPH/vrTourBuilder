@@ -40,12 +40,17 @@ export interface TourSettings {
   name: string; // nombre del proyecto: <title> del HTML y nombre de los archivos
   gallery: boolean; // incluir el plugin de galería para saltar entre zonas
   lang: ExportLang; // idioma de los textos del tour exportado
+  // Trocear las fotos en teselas al exportar (EquirectangularTilesAdapter): el visor
+  // solo descarga la zona que se mira y el móvil no tiene que decodificar la foto
+  // entera de golpe. Ausente en proyectos antiguos ⇒ se aplica el valor por defecto.
+  tiles: boolean;
 }
 
 export const DEFAULT_SETTINGS: TourSettings = {
   name: '',
   gallery: false,
   lang: 'es',
+  tiles: true,
 };
 
 // Documento del proyecto (lo que se guarda / exporta como .vrtour.zip).

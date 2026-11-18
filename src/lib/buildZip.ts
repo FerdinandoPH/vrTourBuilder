@@ -7,7 +7,14 @@ import {
   type TourProject,
   type TourSettings,
 } from '../types';
-import { generateIndexHtml, generateTourJs, thumbFileName } from './exportTour';
+import {
+  generateIndexHtml,
+  generateTourJs,
+  thumbFileName,
+  tileDirs,
+  type TiledPanorama,
+} from './exportTour';
+import { tilePhotos } from './tiles/tilePhotos';
 import { getExportStrings } from './exportI18n';
 import { getImage, getThumb } from '../store/persistence';
 import { makeThumbnail } from './thumbnails';
@@ -22,18 +29,73 @@ function tourTitle(settings: TourSettings): string {
   return settings.name.trim() || DEFAULT_TITLE;
 }
 
-// Construye y descarga el paquete ejecutable: index.html + tour.js + ./pano/*
-// Reparte el progreso: leer fotos 0→50 %, comprimir 50→100 %.
+// Resultado de la exportación, para avisar al usuario si algo no salió como pidió.
+export interface TourZipResult {
+  // Fotos que no se pudieron trocear (no son panorámicas 2:1 completas o no se
+  // pudieron leer); si hay alguna, el tour se exporta con las fotos enteras.
+  untiledPhotos: string[];
+}
+
+// Construye y descarga el paquete ejecutable: index.html + tour.js + fotos.
+// Las fotos van troceadas en ./pano_tiles (si `settings.tiles`) o enteras en ./pano.
+// Reparte el progreso: trocear 0→60 % (si aplica), añadir fotos →70 %, comprimir →100 %.
 export async function downloadTourZip(
   nodes: TourNode[],
   links: TourLink[],
   settings: TourSettings,
   onProgress?: ProgressFn,
-): Promise<void> {
+): Promise<TourZipResult> {
   const zip = new JSZip();
   const ex = getExportStrings(settings.lang);
-  zip.file('index.html', generateIndexHtml(tourTitle(settings), settings));
-  zip.file('tour.js', generateTourJs(nodes, links, settings));
+  const result: TourZipResult = { untiledPhotos: [] };
+
+  // 1) Teselas (opcional). Si alguna foto no se puede trocear, se exporta todo
+  //    sin teselas: el visor usa un único tipo de carga para todo el tour.
+  let tiled: Map<string, TiledPanorama> | undefined;
+  const tileSpan = settings.tiles ? 0.6 : 0;
+  if (settings.tiles && nodes.length) {
+    onProgress?.(0, i18n.t('export.progress.tilingPhotos', { current: 0, total: nodes.length }));
+    const inputs: { key: string; blob: Blob }[] = [];
+    for (const node of nodes) {
+      const blob = await getImage(node.imageId);
+      if (blob) inputs.push({ key: node.id, blob });
+      else result.untiledPhotos.push(node.fileName);
+    }
+    const photos = await tilePhotos(inputs, (done, total) =>
+      onProgress?.(
+        (done / total) * tileSpan,
+        i18n.t('export.progress.tilingPhotos', { current: done, total }),
+      ),
+    );
+    for (const node of nodes) {
+      const p = photos.get(node.id);
+      if (p && !p.ok) {
+        console.warn(`No se pudo trocear ${node.fileName}: ${p.reason}`);
+        result.untiledPhotos.push(node.fileName);
+      }
+    }
+    if (result.untiledPhotos.length === 0) {
+      tiled = new Map();
+      const dirs = tileDirs(nodes);
+      const root = zip.folder('pano_tiles')!;
+      for (const node of nodes) {
+        const p = photos.get(node.id)!;
+        const dir = dirs.get(node.id)!;
+        const folder = root.folder(dir.replace('./pano_tiles/', ''))!;
+        // Ya son JPEG: STORE (sin DEFLATE) es mucho más rápido y apenas cambia el tamaño.
+        folder.file('base.jpg', p.base, { compression: 'STORE' });
+        for (let c = 0; c < p.cols; c++) {
+          for (let r = 0; r < p.rows; r++) {
+            folder.file(`${c}_${r}.jpg`, p.tiles[c][r], { compression: 'STORE' });
+          }
+        }
+        tiled.set(node.id, { dir, width: p.width, cols: p.cols, rows: p.rows });
+      }
+    }
+  }
+
+  zip.file('index.html', generateIndexHtml(tourTitle(settings), settings, !!tiled));
+  zip.file('tour.js', generateTourJs(nodes, links, settings, tiled));
   // Ayudas para servir el tour por HTTP (no funciona con doble clic / file://).
   // Nombres de archivo localizados según el idioma del tour.
   zip.file(ex.readmeFile, ex.readmeTxt);
@@ -42,12 +104,15 @@ export async function downloadTourZip(
     unixPermissions: 0o755, // ejecutable en mac/linux
   });
 
+  // Tramos de progreso: [tileSpan, zipStart) añadir fotos, [zipStart, 1] comprimir.
+  const zipStart = tileSpan ? 0.7 : 0.5;
   const pano = zip.folder('pano')!;
   const thumbs = settings.gallery ? pano.folder('thumbs')! : null;
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
     const blob = await getImage(node.imageId);
-    if (blob) pano.file(node.fileName, blob);
+    // Con teselas, la foto entera no hace falta (solo su miniatura para la galería).
+    if (blob && !tiled) pano.file(node.fileName, blob);
     // Miniatura para la galería (usa la cacheada o la genera al vuelo).
     if (thumbs) {
       let thumb = await getThumb(node.imageId);
@@ -61,7 +126,7 @@ export async function downloadTourZip(
       if (thumb) thumbs.file(thumbFileName(node.fileName), thumb);
     }
     onProgress?.(
-      (nodes.length ? (i + 1) / nodes.length : 1) * 0.5,
+      tileSpan + (nodes.length ? (i + 1) / nodes.length : 1) * (zipStart - tileSpan),
       i18n.t('export.progress.addingPhotos', { current: i + 1, total: nodes.length }),
     );
   }
@@ -69,10 +134,14 @@ export async function downloadTourZip(
   const out = await zip.generateAsync(
     { type: 'blob' },
     (meta) =>
-      onProgress?.(0.5 + (meta.percent / 100) * 0.5, i18n.t('export.progress.compressing')),
+      onProgress?.(
+        zipStart + (meta.percent / 100) * (1 - zipStart),
+        i18n.t('export.progress.compressing'),
+      ),
   );
   onProgress?.(1, i18n.t('export.progress.downloading'));
   saveAs(out, `${slug(tourTitle(settings))}.zip`);
+  return result;
 }
 
 // --- Proyecto (.vrtour.zip): modelo (project.json) + fotos como archivos ---

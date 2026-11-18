@@ -32,6 +32,15 @@ the result and export a ready-to-run ZIP.
    browsers): the folder must be served over HTTP. The launchers start a local server;
    alternatively use `npx serve` or `python -m http.server`. If opened via `file://`,
    `index.html` itself shows these instructions.
+   - **Tiles** (Settings, on by default): each photo is split into tiles under `./pano_tiles`
+     and the tour uses Photo Sphere Viewer's `EquirectangularTilesAdapter`. The viewer first
+     shows a small `base.jpg` and then downloads, always at full resolution, only the tiles in
+     view. Tours load much faster and phones no longer have to decode a huge photo at once
+     (the cause of "Error loading panorama" with 50-70 Mpx photos). With regular camera JPEGs
+     the split is **lossless**: the tiles hold exactly the same JPEG data as the original (a
+     coefficient-level crop, like `jpegtran -crop`). PNGs, progressive JPEGs and sizes that
+     don't fit the JPEG block grid are re-encoded at quality 95. Tiles require full 360º
+     panoramas (2:1); otherwise the tour is exported with whole photos and a warning.
 
 Progress is **auto-saved** in the browser (IndexedDB). Under **Project ▾** you can export or
 import a `.vrtour.zip` file (model + photos) for backup or to continue on another machine.
@@ -64,8 +73,11 @@ publishes a GitHub Release with the installers for all three platforms.
 - **Marker coordinates:** Photo Sphere Viewer's `click` event delivers `yaw`/`pitch` in radians;
   they are stored as-is, in the same format `link.position` expects.
 - **Exported tour:** the `index.html` loads Photo Sphere Viewer from a CDN (jsDelivr) with
-  versions pinned via `importmap`; photos are served locally from `./pano`. It only needs an
-  internet connection to load the library.
+  versions pinned via `importmap`; photos are served locally from `./pano` (or `./pano_tiles`).
+  It only needs an internet connection to load the library.
+- **Tiling:** `src/lib/tiles/jpegLossless.ts` parses baseline JPEGs down to their DCT
+  coefficients and rewrites each tile with optimized Huffman tables, without decoding to
+  pixels. It runs in Web Workers (`tiler.worker.ts`), so the UI stays responsive.
 
 ## License
 
@@ -107,6 +119,17 @@ previsualizas y exportas un ZIP ejecutable.
    (`file://` lo bloquea el navegador): hay que servir la carpeta por HTTP. Los lanzadores
    levantan un servidor local; alternativamente `npx serve` o `python -m http.server`. Si se
    abre por `file://`, el propio `index.html` muestra estas instrucciones.
+   - **Teselas** (Ajustes, activado por defecto): cada foto se trocea en teselas en
+     `./pano_tiles` y el tour usa el `EquirectangularTilesAdapter` de Photo Sphere Viewer. El
+     visor muestra primero un `base.jpg` reducido y después descarga, siempre a resolución
+     completa, solo las teselas que se están viendo. Los tours cargan mucho más rápido y el
+     móvil ya no tiene que decodificar de golpe una foto enorme (la causa de «Error loading
+     panorama» con fotos de 50-70 Mpx). Con los JPEG normales de cámara el troceado es **sin
+     pérdida**: las teselas contienen exactamente los mismos datos JPEG que el original (un
+     recorte a nivel de coeficientes, como `jpegtran -crop`). Los PNG, JPEG progresivos y
+     tamaños que no encajan en los bloques del JPEG se recomprimen a calidad 95. Las teselas
+     exigen panorámicas 360º completas (2:1); si no, el tour se exporta con las fotos enteras
+     y se avisa.
 
 El progreso se **autoguarda** en el navegador (IndexedDB). Con **Proyecto ▾** puedes exportar
 o importar un archivo `.vrtour.zip` (modelo + fotos) para respaldo o continuar en otra máquina.
@@ -140,8 +163,11 @@ Los binarios también se generan automáticamente con GitHub Actions: al empujar
 - **Coordenadas de marcadores:** el evento `click` de Photo Sphere Viewer entrega `yaw`/`pitch`
   en radianes; se guardan tal cual, en el mismo formato que espera `link.position`.
 - **Tour exportado:** el `index.html` carga Photo Sphere Viewer por CDN (jsDelivr) con versiones
-  fijadas mediante `importmap`; las fotos se sirven localmente desde `./pano`. Requiere conexión
-  a internet solo para cargar la librería.
+  fijadas mediante `importmap`; las fotos se sirven localmente desde `./pano` (o `./pano_tiles`).
+  Requiere conexión a internet solo para cargar la librería.
+- **Teselas:** `src/lib/tiles/jpegLossless.ts` lee los JPEG secuenciales hasta sus coeficientes
+  DCT y reescribe cada tesela con tablas Huffman optimizadas, sin decodificar a píxeles. Se
+  ejecuta en Web Workers (`tiler.worker.ts`), así que la interfaz no se bloquea.
 
 ## Licencia
 

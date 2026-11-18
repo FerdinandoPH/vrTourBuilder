@@ -11,10 +11,18 @@ import { getExportStrings } from './exportI18n';
 const THREE_VERSION = '0.184.0';
 const PSV_VERSION = '5.14.3';
 
+// Foto troceada en teselas (ver lib/tiles): carpeta y rejilla dentro de ./pano_tiles.
+export interface TiledPanorama {
+  dir: string; // p.ej. "./pano_tiles/salon"
+  width: number; // ancho completo de la panorámica (alto = width / 2)
+  cols: number;
+  rows: number;
+}
+
 interface ExportNode {
   id: string;
   name: string;
-  panorama: string;
+  panorama: string | (TiledPanorama & { baseUrl: string });
   thumbnail?: string;
   links: { nodeId: string; position: { yaw: number; pitch: number } }[];
 }
@@ -59,18 +67,42 @@ export function buildExportNodes(
   });
 }
 
+// Carpeta de teselas de cada nodo: el nombre de su foto sin extensión, desambiguado
+// si dos fotos comparten nombre base (p.ej. salon.jpg y salon.png).
+export function tileDirs(nodes: TourNode[]): Map<string, string> {
+  const used = new Set<string>();
+  const dirs = new Map<string, string>();
+  for (const node of nodes) {
+    const stem = node.fileName.replace(/\.[^.]+$/, '') || node.id;
+    let name = stem;
+    for (let i = 2; used.has(name.toLowerCase()); i++) name = `${stem}-${i}`;
+    used.add(name.toLowerCase());
+    dirs.set(node.id, `./pano_tiles/${name}`);
+  }
+  return dirs;
+}
+
 export function getStartNodeId(nodes: TourNode[]): string {
   return (nodes.find((n) => n.startNode) ?? nodes[0])?.id ?? '';
 }
 
 // Genera el contenido de tour.js (módulo ES que usa el importmap del index.html).
+// Con `tiled` (nodo -> teselas), las fotos se cargan por teselas con el
+// EquirectangularTilesAdapter en lugar de como una imagen entera.
 export function generateTourJs(
   nodes: TourNode[],
   links: TourLink[],
   settings: TourSettings,
+  tiled?: Map<string, TiledPanorama>,
 ): string {
   const gallery = settings.gallery;
   const exportNodes = buildExportNodes(nodes, links, gallery);
+  if (tiled) {
+    for (const n of exportNodes) {
+      const t = tiled.get(n.id);
+      if (t) n.panorama = { baseUrl: `${t.dir}/base.jpg`, ...t };
+    }
+  }
   const startNodeId = getStartNodeId(nodes);
 
   // Vista inicial del nodo de arranque (yaw/pitch en radianes), aplicada como
@@ -88,15 +120,32 @@ export function generateTourJs(
     ? `\n    [GalleryPlugin, { thumbnailSize: { width: 150, height: 75 } }],`
     : '';
 
+  const tilesImport = tiled
+    ? `import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter';\n`
+    : '';
+  const tilesSetup = tiled
+    ? `
+// Cada foto está troceada en teselas (./pano_tiles/<foto>/<col>_<fila>.jpg): el
+// visor muestra primero base.jpg (reducida) y después descarga, a resolución
+// completa, solo las teselas de la zona que se está mirando.
+for (const node of nodes) {
+  const { dir, ...panorama } = node.panorama;
+  node.panorama = { ...panorama, tileUrl: (col, row) => \`\${dir}/\${col}_\${row}.jpg\` };
+}
+`
+    : '';
+  const tilesAdapter = tiled ? `\n  adapter: EquirectangularTilesAdapter,` : '';
+  const photosComment = tiled ? './pano_tiles' : './pano';
+
   return `import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
-${galleryImport}
-// Nodos generados por VRTourBuilder. Las fotos están en ./pano
+${galleryImport}${tilesImport}
+// Nodos generados por VRTourBuilder. Las fotos están en ${photosComment}
 const nodes = ${JSON.stringify(exportNodes, null, 2)};
-
+${tilesSetup}
 new Viewer({
-  container: document.getElementById('viewer'),
+  container: document.getElementById('viewer'),${tilesAdapter}
   plugins: [
     MarkersPlugin,${galleryPlugin}
     [VirtualTourPlugin, {
@@ -112,7 +161,11 @@ new Viewer({
 
 // Genera el index.html del tour exportado (autocontenido salvo la librería, que
 // se carga por CDN con versiones fijadas mediante importmap).
-export function generateIndexHtml(title: string, settings: TourSettings): string {
+export function generateIndexHtml(
+  title: string,
+  settings: TourSettings,
+  tiled = false,
+): string {
   const cdn = 'https://cdn.jsdelivr.net/npm';
   const s = getExportStrings(settings.lang);
   const galleryCss = settings.gallery
@@ -120,6 +173,9 @@ export function generateIndexHtml(title: string, settings: TourSettings): string
     : '';
   const galleryImport = settings.gallery
     ? `,\n      "@photo-sphere-viewer/gallery-plugin": "${cdn}/@photo-sphere-viewer/gallery-plugin@${PSV_VERSION}/index.module.js"`
+    : '';
+  const tilesImport = tiled
+    ? `,\n      "@photo-sphere-viewer/equirectangular-tiles-adapter": "${cdn}/@photo-sphere-viewer/equirectangular-tiles-adapter@${PSV_VERSION}/index.module.js"`
     : '';
   const galleryInstruction = settings.gallery
     ? `
@@ -181,7 +237,7 @@ export function generateIndexHtml(title: string, settings: TourSettings): string
       "three": "${cdn}/three@${THREE_VERSION}/build/three.module.js",
       "@photo-sphere-viewer/core": "${cdn}/@photo-sphere-viewer/core@${PSV_VERSION}/index.module.js",
       "@photo-sphere-viewer/markers-plugin": "${cdn}/@photo-sphere-viewer/markers-plugin@${PSV_VERSION}/index.module.js",
-      "@photo-sphere-viewer/virtual-tour-plugin": "${cdn}/@photo-sphere-viewer/virtual-tour-plugin@${PSV_VERSION}/index.module.js"${galleryImport}
+      "@photo-sphere-viewer/virtual-tour-plugin": "${cdn}/@photo-sphere-viewer/virtual-tour-plugin@${PSV_VERSION}/index.module.js"${galleryImport}${tilesImport}
     }
   }
   </script>

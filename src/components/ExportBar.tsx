@@ -30,9 +30,12 @@ export default function ExportBar() {
     setBusy(true);
     setProgress({ pct: 0, label: t('export.progress.preparing') });
     try {
-      await downloadTourZip(nodes, links, settings, (fraction, label) =>
+      const result = await downloadTourZip(nodes, links, settings, (fraction, label) =>
         setProgress({ pct: Math.round(fraction * 100), label }),
       );
+      if (result.untiledPhotos.length) {
+        alert(t('export.alertTilesSkipped', { files: result.untiledPhotos.join(', ') }));
+      }
     } finally {
       setBusy(false);
       setProgress(null);
